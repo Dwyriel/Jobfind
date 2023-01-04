@@ -1,8 +1,7 @@
 import {Address} from "../interfaces/address";
 
 export class User {
-    email: string = "";
-    password: string = "";
+    contactEmail: string = "";
     name: string = "";
     telephone: string = "";
     address: Address = {cep: "", city: "", country: "", number: "", state: "", street: "",};
