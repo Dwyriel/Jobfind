@@ -2,7 +2,7 @@ import {Address} from "./address";
 
 export class Joblisting {
     title: string = "";
-    body:string = "";
+    body: string = "";
     requiredSkills: {}[] = [];
     salaryRange: {} = {}; //TODO object
     contractType: string = ""; //TODO enum
