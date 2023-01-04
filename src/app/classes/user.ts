@@ -1,10 +1,10 @@
-import {Address} from "../interfaces/address";
+import {Address} from "./address";
 
 export class User {
     contactEmail: string = "";
     name: string = "";
     telephone: string = "";
-    address: Address = {cep: "", city: "", country: "", number: "", state: "", street: "",};
+    address: Address = new Address();
     academicFormation: {}[] = []; //TODO Academic Formation Interface
     jobExperiences: {}[] = []; //TODO Job Experience Interface
     skills: {}[] = []; //TODO Skill Enum
