@@ -11,7 +11,7 @@ export class Candidate {
     jobExperiences: {}[] = []; //TODO Job Experience Interface
     skills: {}[] = []; //TODO Skill Enum
     languages: {}[] = []; //TODO Language Class
-    links: string[] = ["", ""];
+    links: string[] = [];
     curriculumRef: string = "";
     profilePictureRef: string = "";
     isActive: boolean = false;
