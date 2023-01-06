@@ -2,7 +2,7 @@ import {AccountType} from "../interfaces/account-related-interfaces";
 import {Address, defaultAddress} from "../interfaces/address";
 
 export class Candidate {
-    accountType: AccountType = AccountType.User;
+    accountType: AccountType = AccountType.Candidate;
     contactEmail: string = "";
     name: string = "";
     telephone: string = "";
@@ -35,7 +35,7 @@ export function UserToJSObject(candidate: Candidate) : any{
     };
 }
 
-export function JSObjectToUser(object: any){
+export function JSObjectToCandidate(object: any){
     let candidate: Candidate = new Candidate();
     candidate.accountType = AccountType[object.accountType as keyof typeof AccountType];
     candidate.contactEmail = object.contactEmail;

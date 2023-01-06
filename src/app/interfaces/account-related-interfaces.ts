@@ -4,6 +4,6 @@ export interface LoginCredentials {
 }
 
 export enum AccountType{
-    User,
+    Candidate,
     Company
 }

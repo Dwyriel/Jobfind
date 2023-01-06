@@ -29,7 +29,7 @@ export function CompanyToJSObject(company: Company) : any{
     };
 }
 
-export function JSObjectToUser(object: any){
+export function JSObjectToCompany(object: any){
     let company: Company = new Company();
     company.accountType = AccountType[object.accountType as keyof typeof AccountType];
     company.companyName = object.companyName;

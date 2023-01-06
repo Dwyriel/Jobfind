@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {deleteDoc, doc, Firestore, setDoc, updateDoc} from "@angular/fire/firestore";
-import {Candidate, UserToJSObject} from "../classes/candidate";
-import {Company, CompanyToJSObject} from "../classes/company";
+import {Firestore, deleteDoc, doc, setDoc, updateDoc, getDoc, getDocs, collection, DocumentSnapshot, DocumentData, query, where} from "@angular/fire/firestore";
+import {Candidate, JSObjectToCandidate, UserToJSObject} from "../classes/candidate";
+import {Company, CompanyToJSObject, JSObjectToCompany} from "../classes/company";
 import {AccountType} from "../interfaces/account-related-interfaces";
 import {Auth, User, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword} from "@angular/fire/auth";
 import {BehaviorSubject} from "rxjs";
@@ -19,6 +19,14 @@ export class AccountDBService {
 
     private docShort(id: string) {
         return doc(this.firestore, this.collectionName, id);
+    }
+
+    private colShort() {
+        return collection(this.firestore, this.collectionName);
+    }
+
+    private convertToProperClass(obj: DocumentSnapshot<DocumentData>) {
+        return AccountType[obj.get("accountType") as keyof typeof AccountType] == AccountType.Candidate ? JSObjectToCandidate(obj.data()) : JSObjectToCompany(obj.data());
     }
 
     /**
@@ -61,7 +69,7 @@ export class AccountDBService {
             console.log(err);
         });
         if (wasSuccessful) {
-            let obj = account.accountType == AccountType.User ? UserToJSObject(account as Candidate) : CompanyToJSObject(account as Company);
+            let obj = account.accountType == AccountType.Candidate ? UserToJSObject(account as Candidate) : CompanyToJSObject(account as Company);
             await setDoc(this.docShort(uid), obj).then(() => {
                 wasSuccessful = true;
             }).catch(err => {
@@ -71,6 +79,36 @@ export class AccountDBService {
             });
         }
         return wasSuccessful ? Promise.resolve() : Promise.reject();
+    }
+
+    async GetAccount(id: string) {
+        const doc = await getDoc(this.docShort(id));
+        if (!doc.exists())
+            return Promise.reject();
+        return Promise.resolve(this.convertToProperClass(doc));
+    }
+
+    async GetAllAccounts() {
+        const allDocs = await getDocs(this.colShort());
+        let arrayOfDocs: (Candidate | Company)[] = [];
+        allDocs.forEach(doc => arrayOfDocs.push(this.convertToProperClass(doc)));
+        return arrayOfDocs;
+    }
+
+    async GetAllCandidates() {
+        const queriedDocs = query(this.colShort(), where("accountType", "==", AccountType[AccountType.Candidate]));
+        const docs = await getDocs(queriedDocs);
+        let arrayOfCandidates: Candidate[] = [];
+        docs.forEach(doc => arrayOfCandidates.push(JSObjectToCandidate(doc.data())));
+        return arrayOfCandidates;
+    }
+
+    async GetAllCompanies() {
+        const queriedDocs = query(this.colShort(), where("accountType", "==", AccountType[AccountType.Company]));
+        const docs = await getDocs(queriedDocs);
+        let arrayOfCompanies: Company[] = [];
+        docs.forEach(doc => arrayOfCompanies.push(JSObjectToCompany(doc.data())));
+        return arrayOfCompanies;
     }
 
     UpdateAccount(id: string, obj: { [key: string]: any }) {
