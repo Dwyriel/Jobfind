@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {AppComponent} from "./app.component";
+import {HomeComponent} from "./components/home/home.component";
 
 const routes: Routes = [
     {
@@ -10,11 +10,11 @@ const routes: Routes = [
     },
     {
         path: 'home',
-        component: AppComponent//TODO make a "home" component
+        component: HomeComponent
     },
     {
         path: '**',
-        component: AppComponent//TODO make a "page not found" component
+        component: HomeComponent//TODO make a "page not found" component
     }
 ];
 

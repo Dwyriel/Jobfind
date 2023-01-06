@@ -10,10 +10,12 @@ import {provideAnalytics, getAnalytics, ScreenTrackingService, UserTrackingServi
 import {provideAuth, getAuth} from '@angular/fire/auth';
 import {provideFirestore, getFirestore} from '@angular/fire/firestore';
 import {provideStorage, getStorage} from '@angular/fire/storage';
+import { HomeComponent } from './components/home/home.component';
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        HomeComponent
     ],
     imports: [
         BrowserModule,
