@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Firestore, DocumentSnapshot, deleteDoc, doc, setDoc, updateDoc, getDoc, getDocs, collection, query, where, docSnapshots} from "@angular/fire/firestore";
+import {Firestore, DocumentData, deleteDoc, doc, setDoc, updateDoc, getDoc, getDocs, collection, query, where, docData} from "@angular/fire/firestore";
 import {Auth, User, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword} from "@angular/fire/auth";
 import {BehaviorSubject} from "rxjs";
 import {Candidate, JSObjectToCandidate, UserToJSObject} from "../classes/candidate";
@@ -26,8 +26,8 @@ export class AccountDBService {
         return collection(this.firestore, this.collectionName);
     }
 
-    public ConvertToProperClass(obj: DocumentSnapshot) {
-        return AccountType[obj.get("accountType") as keyof typeof AccountType] == AccountType.Candidate ? JSObjectToCandidate(obj.data()) : JSObjectToCompany(obj.data());
+    public ConvertToProperClass(docData: DocumentData) {
+        return AccountType[docData["accountType"] as keyof typeof AccountType] == AccountType.Candidate ? JSObjectToCandidate(docData) : JSObjectToCompany(docData);
     }
 
     /**
@@ -86,17 +86,17 @@ export class AccountDBService {
         const doc = await getDoc(this.docShort(id));
         if (!doc.exists())
             return Promise.reject();
-        return Promise.resolve(this.ConvertToProperClass(doc));
+        return Promise.resolve(this.ConvertToProperClass(doc.data()));
     }
 
     GetAccountObservable(id: string) {
-        return docSnapshots(this.docShort(id));
+        return docData(this.docShort(id));
     }
 
     public async GetAllAccounts() {
         const allDocs = await getDocs(this.colShort());
         let arrayOfDocs: (Account)[] = [];
-        allDocs.forEach(doc => arrayOfDocs.push(this.ConvertToProperClass(doc)));
+        allDocs.forEach(doc => arrayOfDocs.push(this.ConvertToProperClass(doc.data())));
         return arrayOfDocs;
     }
 

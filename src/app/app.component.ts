@@ -67,7 +67,7 @@ export class AppComponent implements OnInit, OnDestroy {
     async GetAccount(id: string) {
         if (this.accountSubscription && !this.accountSubscription.closed)
             this.accountSubscription.unsubscribe();
-        this.accountSubscription = await this.accountDBService.GetAccountObservable(id).subscribe(async doc => {
+        this.accountSubscription = this.accountDBService.GetAccountObservable(id).subscribe(async doc => {
             let account: Account | null = this.accountDBService.ConvertToProperClass(doc);
             if (!account.isActive)
                 await this.accountDBService.Logout().then(success => {
