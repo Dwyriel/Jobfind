@@ -1,6 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AppUtilityService} from "./services/app-utility.service";
 import {fromEvent, Observable, Subscription} from "rxjs";
+import {AccountDBService} from "./services/account-db.service";
+import {Account} from "./classes/app-utility";
 
 @Component({
     selector: 'app-root',
@@ -12,8 +14,9 @@ export class AppComponent implements OnInit, OnDestroy {
     private windowResizeObservable?: Observable<Event>;
     private windowResizeSubscription?: Subscription;
     private authUserSubscription?: Subscription;
+    private accountSubscription?: Subscription;
 
-    constructor() {
+    constructor(private accountDBService: AccountDBService) {
     }
 
     async ngOnInit() {
@@ -26,6 +29,8 @@ export class AppComponent implements OnInit, OnDestroy {
             this.windowResizeSubscription.unsubscribe();
         if (this.authUserSubscription && !this.authUserSubscription.closed)
             this.authUserSubscription.unsubscribe();
+        if (this.accountSubscription && !this.accountSubscription.closed)
+            this.accountSubscription.unsubscribe();
     }
 
     private SetInitializationParameters() {
@@ -48,6 +53,30 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     private verifyUser() {
+        if (this.authUserSubscription && !this.authUserSubscription.closed)
+            this.authUserSubscription.unsubscribe();
+        this.authUserSubscription = this.accountDBService.GetUserObservable().subscribe(async user => {
+            if (user) {
+                await this.GetAccount(user.uid);
+                return;
+            }
+            AppUtilityService.PushAccountInfo(null);
+        });
+    }
 
+    async GetAccount(id: string) {
+        if (this.accountSubscription && !this.accountSubscription.closed)
+            this.accountSubscription.unsubscribe();
+        this.accountSubscription = await this.accountDBService.GetAccountObservable(id).subscribe(async doc => {
+            let account: Account | null = this.accountDBService.ConvertToProperClass(doc);
+            if (!account.isActive)
+                await this.accountDBService.Logout().then(success => {
+                    if (success)
+                        if (this.accountSubscription && !this.accountSubscription.closed)
+                            this.accountSubscription.unsubscribe();
+                    account = null;
+                });
+            AppUtilityService.PushAccountInfo(account);
+        });
     }
 }
