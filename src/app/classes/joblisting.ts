@@ -1,4 +1,4 @@
-import {Address} from "./address";
+import {Address, defaultAddress} from "../interfaces/address";
 
 export class Joblisting {
     title: string = "";
@@ -7,7 +7,7 @@ export class Joblisting {
     salaryRange: {} = {}; //TODO object
     contractType: string = ""; //TODO enum
     regimeType: string = ""; //TODO enum
-    address: Address = new Address();
+    address: Address = defaultAddress;
     expired: boolean = false;
     isActive: boolean = false;
 }

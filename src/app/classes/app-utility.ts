@@ -1,3 +1,6 @@
+import {Candidate} from "./candidate";
+import {Company} from "./company";
+
 export class BrowserInfo {
     innerWidth: number = -1;
     innerHeight: number = -1;
@@ -9,3 +12,5 @@ export class BrowserInfo {
 export class AppInfo{
     appTitle = "";
 }
+
+export type Account = Candidate | Company;

@@ -1,10 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Firestore, deleteDoc, doc, setDoc, updateDoc, getDoc, getDocs, collection, DocumentSnapshot, DocumentData, query, where} from "@angular/fire/firestore";
-import {Candidate, JSObjectToCandidate, UserToJSObject} from "../classes/candidate";
-import {Company, CompanyToJSObject, JSObjectToCompany} from "../classes/company";
-import {AccountType} from "../interfaces/account-related-interfaces";
 import {Auth, User, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword} from "@angular/fire/auth";
 import {BehaviorSubject} from "rxjs";
+import {Candidate, JSObjectToCandidate, UserToJSObject} from "../classes/candidate";
+import {Company, CompanyToJSObject, JSObjectToCompany} from "../classes/company";
+import {Account} from "../classes/app-utility";
+import {AccountType} from "../interfaces/account-related-interfaces";
 
 @Injectable({
     providedIn: 'root'
@@ -58,7 +59,7 @@ export class AccountDBService {
         return wasSuccessful;
     }
 
-    async CreateAccount(email: string, password: string, account: Candidate | Company) {
+    async CreateAccount(email: string, password: string, account: Account) {
         let wasSuccessful = false;
         let uid: string = "error";
         await createUserWithEmailAndPassword(this.auth, email, password).then(answer => {
@@ -90,7 +91,7 @@ export class AccountDBService {
 
     async GetAllAccounts() {
         const allDocs = await getDocs(this.colShort());
-        let arrayOfDocs: (Candidate | Company)[] = [];
+        let arrayOfDocs: (Account)[] = [];
         allDocs.forEach(doc => arrayOfDocs.push(this.convertToProperClass(doc)));
         return arrayOfDocs;
     }
