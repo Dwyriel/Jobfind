@@ -7,3 +7,7 @@ export enum AccountType{
     Candidate,
     Company
 }
+
+export enum CompanySize{
+    Small, Medium, Large
+}

@@ -1,5 +1,5 @@
 import {Address, defaultAddress} from "../interfaces/address";
-import {AccountType} from "../interfaces/account-related-interfaces";
+import {AccountType, CompanySize} from "../interfaces/account-related-interfaces";
 
 export class Company {
     accountType: AccountType = AccountType.Company;
@@ -9,7 +9,7 @@ export class Company {
     website: string = "";
     contactEmail: string = "";
     legalInfo: string = "";
-    companySize: string = ""; //TODO company size enum
+    companySize: CompanySize = CompanySize.Small;
     profilePictureRef: string = "";
     isActive: boolean = false;
 }
@@ -23,7 +23,7 @@ export function CompanyToJSObject(company: Company) : any{
         website: company.website,
         contactEmail: company.contactEmail,
         legalInfo: company.legalInfo,
-        companySize: company.companySize,
+        companySize: CompanySize[company.companySize],
         profilePictureRef: company.profilePictureRef,
         isActive: company.isActive
     };
@@ -38,7 +38,7 @@ export function JSObjectToCompany(object: any){
     company.website = object.website;
     company.contactEmail = object.contactEmail;
     company.legalInfo = object.legalInfo;
-    company.companySize = object.companySize;
+    company.companySize = CompanySize[object.companySize as keyof typeof CompanySize];
     company.profilePictureRef = object.profilePictureRef;
     company.isActive = object.isActive;
     return company;
